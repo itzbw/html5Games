@@ -1,0 +1,225 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	const canvas = document.getElementById("ctx");
+	var ctx = canvas.getContext("2d");
+	ctx.font = '20px Arial';
+	ctx.fillStyle = 'salmon';
+
+	var height = 400;
+	var width = 640;
+	var frameCount = 0;
+
+	var timeWhenGameStarted = Date.now();
+	//Player
+
+	var player = {
+		x: 50,
+		y: 50,
+		spdX: 10,
+		spdY: 5,
+		width: 20,
+		height: 20,
+		name: "P",
+		hp: 10,
+		color: 'grey',
+	};
+
+	var enemyList = {};
+
+	//check if the Entitis are colliding
+	// return distance (int)
+	getDistanceBetweenEntity = function (entity1, entity2) {
+		var distanceX = entity1.x - entity2.x;
+		var distanceY = entity1.y - entity2.y;
+		return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+	}
+
+	ifCollideEntity = function (entity1, entity2) {
+		var rect1 = {
+			x: entity1.x - entity1.width / 2,
+			y: entity1.y - entity1.height / 2,
+			width: entity1.width,
+			height: entity1.height,
+		}
+
+		var rect2 = {
+			x: entity2.x - entity2.width / 2,
+			y: entity2.y - entity2.height / 2,
+			width: entity2.width,
+			height: entity2.height,
+
+		}
+
+		return ifCollideRectRect(rect1, rect2);
+
+		// var distance = getDistanceBetweenEntity(entity1, entity2);
+		// return distance <= 50;
+	}
+
+	ifCollideRectRect = function (rect1, rect2) {
+		return rect1.x <= rect2.x + rect2.width
+			&& rect2.x <= rect1.x + rect1.width
+			&& rect1.y <= rect2.y + rect2.width
+			&& rect2.y <= rect1.y + rect1.width
+	}
+
+
+	Enemy = function (id, x, y, spdX, spdY, width, height, name) {
+		var enemy = {
+			x: x,
+			y: y,
+			spdX: spdX,
+			spdY: spdY,
+			width: width,
+			height: height,
+			name: name,
+			id: 'id', // for enemyList
+			color: 'red',
+		};
+		enemyList[id] = enemy;
+	}
+
+	document.onmousemove = function (mouse) {
+		var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+		var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+
+		if (mouseX + player.width >= width)
+			mouseX = width - player.width;
+
+		if (mouseX <= player.width)
+			mouseX = 0 + player.width;
+
+		if (mouseY + player.height >= height)
+			mouseY = height - player.height;
+
+		if (mouseY <= player.height)
+			mouseY = 0 + player.height;
+
+		player.x = mouseX;
+		player.y = mouseY;
+
+
+
+	}
+
+
+
+
+	updateEntity = function (who) {
+		updateEntityPosition(who);
+		drawEntity(who);
+	}
+
+	updateEntityPosition = function (who) {
+		who.x += who.spdX;
+		who.y += who.spdY;
+
+		if (who.x + who.width >= width || who.x <= who.width) {
+			who.spdX *= -1;
+		}
+
+		if (who.y + who.height >= height || who.y <= who.height) {
+			who.spdY *= -1;
+		}
+
+	}
+
+
+	drawEntity = function (who) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.fillStyle = who.color;
+		ctx.arc(who.x, who.y, who.width, 0, Math.PI * 2, true);
+		ctx.fill();
+		//ctx.fillRect(who.x - 10, who.y - 10, 20, 20); // -10 makes the point at middle //triangle
+		ctx.restore();
+	}
+
+	// drawEnemy = function (who) {
+	// 	ctx.save();
+	// 	ctx.beginPath();
+	// 	ctx.fillStyle = who.color;
+	// 	ctx.arc(who.x, who.y, who.width, 0, Math.PI * 2, true);
+	// 	ctx.fill();
+	// 	//ctx.fillRect(who.x - 20, who.y - 20, 40, 40);
+	// 	ctx.restore();
+	// }
+
+
+
+	// has to put at the end but not variable
+	update = function () {
+		ctx.clearRect(0, 0, width, height);
+
+		frameCount++;
+		if (frameCount % 300 === 0)
+			EnemyGenerator();
+		// if (frameCount === 600)
+		// 	EnemyGenerator();
+		// if (frameCount === 800)
+		// 	EnemyGenerator();
+
+		// a for loop for all the enemies
+		for (var i in enemyList) {
+			updateEntity(enemyList[i]);
+
+			var isCollide = ifCollideEntity(player, enemyList[i]);
+			if (isCollide) {
+				console.log("COLLISION", player.x, player.y);
+				player.hp = player.hp - 1;
+			}
+		}
+		if (player.hp <= 0) {
+			var timeSurvivied = Date.now() - timeWhenGameStarted;
+			console.log("You lost! You have survived for " + timeSurvivied + "ms");
+			//timeWhenGameStarted = Date.now();
+			startNewGame();
+
+		}
+
+		drawEntity(player);
+		ctx.fillText(player.hp + "hp", 0, 20);
+
+	}
+
+
+	EnemyGenerator = function () {
+		var x = Math.floor(Math.random() * 640);
+		var y = Math.floor(Math.random() * 400);
+
+		var height = Math.floor(Math.random() * 30 + 10); // height between 10 to 40
+		var width = Math.floor(Math.random() * 30 + 10);
+
+		var id = Math.floor(Math.random() * 10);
+
+		var spdX = Math.floor(5 + Math.random() * 5);
+		var spdY = Math.floor(5 + Math.random() * 5);
+
+		Enemy(id, x, y, spdX, spdY, width, height);
+		console.log(id, x, y, spdX, spdY, width, height);
+	}
+
+	startNewGame = function () {
+		player.hp = 10;
+		timeWhenGameStarted = Date.now();
+		frameCount = 0;
+		enemyList = {};
+		EnemyGenerator();
+		EnemyGenerator();
+		EnemyGenerator();
+
+	}
+
+	startNewGame();
+
+
+	setInterval(update, 1000 / 60); //  25fps , 40ms
+
+
+</script>

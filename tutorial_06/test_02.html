@@ -13,6 +13,8 @@
 
 	var height = 400;
 	var width = 640;
+
+	var timeWhenGameStarted = Date.now();
 	//Player
 
 	var player = {
@@ -23,10 +25,23 @@
 		width: 2,
 		height: 2,
 		name: "P",
+		hp: 10,
 	};
 
 	var enemyList = {};
 
+	//check if the Entitis are colliding
+	// return distance (int)
+	getDistanceBetweenEntity = function (entity1, entity2) {
+		var distanceX = entity1.x - entity2.x;
+		var distanceY = entity1.y - entity2.y;
+		return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+	}
+
+	ifCollideEntity = function (entity1, entity2) {
+		var distance = getDistanceBetweenEntity(entity1, entity2);
+		return distance <= 50;
+	}
 
 
 	Enemy = function (id, x, y, spdX, spdY, name) {
@@ -41,30 +56,22 @@
 			id: 'id', // for enemyList
 		};
 		enemyList[id] = enemy;
+	}
 
+	document.onmousemove = function (mouse) {
+		var mouseX = mouse.clientX;
+		var mouseY = mouse.clientY;
+
+		player.x = mouseX;
+		player.y = mouseY;
 	}
 
 
-
-	//check if the Entitis are colliding
-	// return distance (int)
-	getDistanceBetweenEntity = function (entity1, entity2) {
-		var distanceX = entity1.x - entity2.x;
-		var distanceY = entity1.y = entity2.y;
-		return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-	}
-
-	ifCollideEntity = function (entity1, entity2) {
-		var distance = getDistanceBetweenEntity(entity1, entity2);
-		return distance <= 50;
-	}
 
 
 	updateEntity = function (who) {
-
 		updateEntityPosition(who);
 		drawEntity(who);
-
 	}
 
 	updateEntityPosition = function (who) {
@@ -85,12 +92,10 @@
 		ctx.fillText(who.name, who.x, who.y);
 	}
 
-
-
 	// has to put at the end but not variable
 	update = function () {
-		ctx.clearRect(0, 0, width, height)
-		updateEntity(player);
+		ctx.clearRect(0, 0, width, height);
+
 
 		// a for loop for all the enemies
 		for (var i in enemyList) {
@@ -99,9 +104,20 @@
 			var isCollide = ifCollideEntity(player, enemyList[i]);
 			if (isCollide) {
 				console.log("COLLISION", player.x, player.y);
+				player.hp = player.hp - 1;
+				if (player.hp <= 0) {
+					var timeSurvivied = Date.now() - timeWhenGameStarted;
+					console.log("You lost! You have survived for " + timeSurvivied + "ms");
+					//timeWhenGameStarted = Date.now();
+					player.hp = 10;
+				}
 			}
 
 		}
+
+		drawEntity(player);
+		ctx.fillText(player.hp + "hp", 0, 20);
+
 	}
 
 	Enemy('E2', 300, 120, 10, 5, "E2");
