@@ -1,0 +1,100 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	const canvas = document.getElementById("ctx");
+	var ctx = canvas.getContext("2d");
+	ctx.font = '20px Arial';
+	ctx.fillStyle = 'salmon';
+
+	var height = 400;
+	var width = 640;
+	//Player
+
+	var player = {
+		x: 50,
+		y: 50,
+		spdX: 10,
+		spdY: 5,
+		width: 2,
+		height: 2,
+		name: "P",
+	};
+
+	var enemyList = {};
+
+	Enemy('E2', 300, 120, 10, 5, "E2");
+	Enemy('E1', 200, 350, 10, 5, "E");
+
+	function Enemy(id, x, y, spdX, spdY, name) {
+		var enemy = {
+			x: x,
+			y: y,
+			spdX: spdX,
+			spdY: spdY,
+			width: 2,
+			height: 2,
+			name: name,
+			id: 'id', // for enemyList
+		};
+		enemyList[id] = enemy;
+
+	}
+
+	setInterval(update, 1000 / 60); //  25fps , 40ms
+
+	//check if the Entitis are colliding
+	// return distance (int)
+	function getDistanceBetweenEntity(entity1, entity2) {
+		var distanceX = entity1.x - entity2.x;
+		var distanceY = entity1.y = entity2.y;
+		return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+	}
+
+	function ifCollideEntity(entity1, entity2) {
+		var distance = getDistanceBetweenEntity(entity1, entity2);
+		return distance <= 50;
+	}
+
+
+	function updateEntity(who) {
+		who.x += who.spdX;
+		who.y += who.spdY;
+		ctx.fillText(who.name, who.x, who.y);
+
+		if (who.x + who.width >= width || who.x <= who.width) {
+			who.spdX *= -1;
+		}
+
+		if (who.y + who.height >= height || who.y <= who.height) {
+			who.spdY *= -1;
+		}
+	}
+
+
+
+	// has to put at the end but not variable
+	function update() {
+		ctx.clearRect(0, 0, width, height)
+		updateEntity(player);
+
+		// a for loop for all the enemies
+		for (var i in enemyList) {
+			updateEntity(enemyList[i]);
+
+			var isCollide = ifCollideEntity(player, enemyList[i]);
+			if (isCollide) {
+				console.log("COLLISION", player.x, player.y);
+			}
+
+		}
+
+
+	}
+
+
+</script>

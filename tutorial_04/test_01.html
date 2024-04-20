@@ -1,0 +1,90 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	const canvas = document.getElementById("ctx");
+	var ctx = canvas.getContext("2d");
+	ctx.font = '20px Arial';
+	ctx.fillStyle = 'salmon';
+
+	var height = 400;
+	var width = 640;
+	//Player
+
+	var player = {
+		x: 50,
+		y: 50,
+		spdX: 10,
+		spdY: 5,
+		width: 2,
+		height: 2,
+		name: "P",
+	};
+
+	var enemyList = {};
+
+
+	// enemy as object V.2
+	var enemy = {
+		x: 200,
+		y: 350,
+		spdX: 10,
+		spdY: 5,
+		width: 2,
+		height: 2,
+		name: "E",
+		id: 'E1', // for enemyList
+	};
+	enemyList['E1'] = enemy
+
+	var enemy2 = {
+		x: 300,
+		y: 120,
+		spdX: 10,
+		spdY: 5,
+		width: 2,
+		height: 2,
+		name: "E2",
+		id: 'E2', // for enemyList
+	};
+	enemyList['E2'] = enemy2
+
+	setInterval(update, 1000 / 60); //  25fps , 40ms
+
+	function updateEntity(who) {
+		who.x += who.spdX;
+		who.y += who.spdY;
+		ctx.fillText(who.name, who.x, who.y);
+
+		if (who.x + who.width >= width || who.x <= who.width) {
+			who.spdX *= -1;
+		}
+
+		if (who.y + who.height >= height || who.y <= who.height) {
+			who.spdY *= -1;
+		}
+	}
+
+
+
+	// has to put at the end but not variable
+	function update() {
+		ctx.clearRect(0, 0, width, height)
+		updateEntity(player);
+		// updateEntity(enemyList['E1']);
+		// updateEntity(enemyList['E2']);
+
+		// a for loop for all the enemies
+		for (var i in enemyList) {
+			updateEntity(enemyList[i]);
+		}
+
+
+	}
+
+
+</script>

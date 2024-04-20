@@ -1,0 +1,107 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	const canvas = document.getElementById("ctx");
+	var ctx = canvas.getContext("2d");
+	ctx.font = '20px Arial';
+	ctx.fillStyle = 'salmon';
+
+	var height = 400;
+	var width = 640;
+	//Player
+	// var x = 50; // x.coordinate
+	// var y = 50; // y.coordinate
+	// var spdX = 10; //distance between x and x+1
+	// var spdY = 5; // distance between y and y+1
+	// var playerHeight = 2;
+	// var playerWidth = 2;
+	// var playerName = "P";
+
+	var player = {
+		x: 50,
+		y: 50,
+		spdX: 10,
+		spdY: 5,
+		width: 2,
+		height: 2,
+		name: "P",
+
+	};
+
+	//Enemy
+	// var enemyX = 200; // x.coordinate
+	// var enemyY = 350; // y.coordinate
+	// var enemySpdX = 10; //distance between x and x+1
+	// var enemySpdY = 5; // distance between y and y+1
+	// var enemyHeight = 2;
+	// var enemyWidth = 2;
+	// var enemyName = "E";
+
+	// Enemy as object
+	// var enemy = {};
+	// enemy.x = 200;
+	// enemy.y = 350;
+	// enemy.spdX = 10;
+	// enemy.spdY = 5;
+	// enemy.height = 2;
+	// enemy.width = 2;
+	// enemy.name = "E";
+
+	// enemy as object V.2
+	var enemy = {
+		x: 200,
+		y: 350,
+		spdX: 10,
+		spdY: 5,
+		width: 2,
+		height: 2,
+		name: "E",
+	};
+
+	setInterval(update, 1000 / 60); //  25fps , 40ms
+
+	function updatePlayer() {
+		player.x += player.spdX;
+		player.y += player.spdY;
+		ctx.fillText(player.name, player.x, player.y);
+
+		if (player.x + player.width >= width || player.x <= player.width) {
+			player.spdX *= -1;
+		}
+
+		if (player.y + player.height >= height || player.y <= player.height) {
+			player.spdY *= -1;
+		}
+	}
+
+	function updateEnemy() {
+		enemy.x += enemy.spdX;
+		enemy.y += enemy.spdY;
+		ctx.fillText(enemy.name, enemy.x, enemy.y);
+
+		if (enemy.x + enemy.width >= width || enemy.x <= enemy.width) {
+			enemy.spdX *= -1;
+		}
+
+		if (enemy.y + enemy.height >= height || enemy.y <= enemy.height) {
+			enemy.spdY *= -1;
+		}
+
+	}
+
+	// has to put at the end but not variable
+	function update() {
+		ctx.clearRect(0, 0, width, height)
+		updatePlayer();
+		updateEnemy();
+
+
+	}
+
+
+</script>
