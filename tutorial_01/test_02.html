@@ -1,0 +1,42 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+/**
+ * @type {HTMLCanvasElement}
+ */
+const canvas = document.getElementById("ctx");
+var ctx=canvas.getContext("2d");
+ctx.font = '20px Arial';
+ctx.fillStyle = 'salmon';
+
+var x = 50; // x.coordinate
+var y = 50; // y.coordinate
+var spdX = 25; //distance between x and x+1
+var spdY = 5; // distance between y and y+1
+ctx.fillText('P',x , y);
+
+setInterval(update, 600);
+
+// update();
+
+// update();
+// update();
+
+// update();
+
+// update();
+
+
+// has to put at the end but not variable
+function update(){
+	ctx.clearRect(0,0,2000,2000)
+	x += spdX;
+	y += spdY;
+	ctx.fillText('P',x , y);
+	console.log('piggie', x);
+}
+
+
+</script>

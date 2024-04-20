@@ -1,0 +1,17 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+var ctx=document.getElementById("ctx").getContext("2d");
+
+	// to modify : use =
+ctx.font = '50px Arial';
+ctx.fillStyle = 'salmon'; // fill with color
+ctx.globalAlpha = 0.5; // transparency
+	// to draw : use ()
+
+ctx.fillText('Piggie', 75, 60); // (text, x, y)
+ctx.fillRect (75, 60, 100, 100); // draw rectangle (startX, startY, width, height)
+ctx.clearRect (75, 75, 100, 100); // clear canvas (startX, startY, width, height)
+</script>

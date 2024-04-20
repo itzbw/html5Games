@@ -1,0 +1,69 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	const canvas = document.getElementById("ctx");
+	var ctx = canvas.getContext("2d");
+	ctx.font = '20px Arial';
+	ctx.fillStyle = 'salmon';
+
+	var height = 400;
+	var width = 640;
+	//Player
+	var x = 50; // x.coordinate
+	var y = 50; // y.coordinate
+	var spdX = 10; //distance between x and x+1
+	var spdY = 5; // distance between y and y+1
+	var playerHeight = 2;
+	var playerWidth = 2;
+	var playerName = "P";
+
+	//Enemy
+	var enemyX = 200; // x.coordinate
+	var enemyY = 350; // y.coordinate
+	var enemySpdX = 10; //distance between x and x+1
+	var enemySpdY = 5; // distance between y and y+1
+	var enemyHeight = 2;
+	var enemyWidth = 2;
+	var enemyName = "E";
+
+	setInterval(update, 1000 / 60); //  25fps , 40ms
+
+	// has to put at the end but not variable
+	function update() {
+		ctx.clearRect(0, 0, width, height)
+		// player
+		x += spdX;
+		y += spdY;
+		ctx.fillText(playerName, x, y);
+
+		if (x + playerWidth >= width || x <= playerWidth) {
+			spdX *= -1;
+		}
+
+		if (y + playerHeight >= height || y <= playerHeight) {
+			spdY *= -1;
+		}
+
+		//enemy
+		enemyX += enemySpdX;
+		enemyY += enemySpdY;
+		ctx.fillText(enemyName, enemyX, enemyY);
+
+		if (enemyX + enemyWidth >= width || enemyX <= enemyWidth) {
+			enemySpdX *= -1;
+		}
+
+		if (enemyY + enemyHeight >= height || enemyY <= enemyHeight) {
+			enemySpdY *= -1;
+		}
+
+
+	}
+
+
+</script>

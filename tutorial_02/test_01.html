@@ -1,0 +1,44 @@
+<canvas id="ctx" width="640" height="400" style="border: 1px solid saddlebrown;"> </canvas>
+
+
+<script>
+
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	const canvas = document.getElementById("ctx");
+	var ctx = canvas.getContext("2d");
+	ctx.font = '20px Arial';
+	ctx.fillStyle = 'salmon';
+
+	var x = 50; // x.coordinate
+	var y = 50; // y.coordinate
+	var spdX = 10; //distance between x and x+1
+	var spdY = 5; // distance between y and y+1
+	var height = 400;
+	var width = 640;
+	var playerHeight = 2;
+	var playerWidth = 2;
+	var playName = "P";
+
+	setInterval(update, 1000 / 60); //  25fps , 40ms
+
+	// has to put at the end but not variable
+	function update() {
+		ctx.clearRect(0, 0, width, height)
+		x += spdX;
+		y += spdY;
+		ctx.fillText(playName, x, y);
+
+		if (x + playerWidth >= width || x <= playerWidth) {
+			spdX *= -1;
+		}
+
+		if (y + playerHeight >= height || y <= playerHeight) {
+			spdY *= -1;
+		}
+
+	}
+
+
+</script>
