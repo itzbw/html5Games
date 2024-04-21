@@ -111,7 +111,7 @@
 		upgradeList[id] = upgrade;
 	}
 
-	Upscore = function (id, x, y, spdX, spdY, width, height, name, catergory, color) {
+	function Upscore({ id, x, y, spdX, spdY, width, height, name, catergory, color }) {
 		var upscore = {
 			x: x,
 			y: y,
@@ -120,13 +120,14 @@
 			width: width,
 			height: height,
 			name: name,
-			id: 'id', // for upgradeList
+			id: 'id', // for upscoreList
 			timer: 0,
 			catergory: catergory,
 			color: color,
 
 		};
 		upscoreList[id] = upscore;
+		return upscore;
 	}
 
 	Bullet = function (id, x, y, spdX, spdY, width, height, name) {
@@ -139,7 +140,7 @@
 			height: height,
 			name: name,
 			id: 'id', // for upgradeList
-			color: 'green',
+			color: 'black',
 			timer: 0,
 		};
 		BulletList[id] = bullet;
@@ -275,7 +276,6 @@
 		//if (frameCount % Math.round(100 / player.attackSpd) === 0)
 		player.attackCounter += player.attackSpd;
 
-
 		if (frameCount % 50 === 0)
 			UpscoreGenerator();
 
@@ -290,10 +290,10 @@
 
 			var isCollide = ifCollideEntity(player, upscoreList[s]);
 			if (isCollide) {
-				if (upscoreList[s].category == 'score') {
+				if (upscoreList[s].category === 'score') {
 					score += 100;
 				}
-				if (upscoreList[s].category == 'attackSpd') {
+				if (upscoreList[s].category === 'attackSpd') {
 					player.attackSpd += 2;
 				}
 				console.log("score++", score);
@@ -431,8 +431,18 @@
 			var color = 'purple';
 		}
 
-		Upscore(id, x, y, spdX, spdY, width, height, category, color);
-		console.log("upscore " + id, x, y, spdX, spdY, width, height, category, color);
+		const upscore = Upscore({
+			catergory: category,
+			color: color,
+			height,
+			width,
+			id,
+			x,
+			y,
+			spdX,
+			spdY,
+		});
+		console.log("upscore", upscore);
 	}
 
 	BulletGenerator = function () {
@@ -468,7 +478,6 @@
 	}
 
 	startNewGame();
-
 
 	setInterval(update, 1000 / 60); //  25fps , 40ms
 
